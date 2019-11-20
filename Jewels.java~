@@ -1,0 +1,610 @@
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.CornerRadii;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+
+/** Game stage, functions, and design
+  * @author Eric Han
+  */
+public class Jewels extends Application {
+  
+  /** Fields */
+  /** Index of color array that the button possesses */
+  private int colorIndex;
+  
+  /** Default row value */
+  private static final int defaultX = 10;
+  
+  /** Default column value */
+  private static final int defaultY = 8;
+  
+  /** Instantiated color count */
+  private static int colorCount;
+  
+  /** Array of colors up to 6 */
+  private static final Color[] colorArr = {Color.rgb(218, 64, 61),Color.rgb(238, 189, 77),Color.rgb(71, 146, 137),Color.rgb(95, 87, 120), Color.rgb(224, 168, 144), Color.rgb(6, 123, 194)};
+  
+  /** Array of button objects */
+  private static Button[][] buttonArr;
+  
+  /** Array of button color attributes */
+  private static Color[][] buttonColorArr;
+  
+  /** Array that keeps track of asterisks */
+  private static boolean[][] starMap;
+  
+  /** Counts the number of moves */
+  private static int numMoves;
+    
+  /** Stores the first button pressed */
+  private static Button button1;
+  
+  /** Stores the second button pressed */
+  private static Button button2;
+  
+  /** Stores the x position of the first button */
+  private static int button1X;
+  
+  /** Stores the y position of the first button */
+  private static int button1Y;
+  
+  /** Stores the initial color of the first button */
+  private static Color button1Color;
+  
+  /** Stores the x position of the second button */
+  private static int button2X;
+  
+  /** Stores the y position of the second button */
+  private static int button2Y;
+  
+  /** Stores the initial color of the second button */
+  private static Color button2Color;
+  
+  /** Returns color index 
+    * @return color index
+    */
+  public int getColorIndex() {
+    return this.colorIndex;
+  }
+  
+  /** Returns the number of colors to be on the board 
+    * @return color count
+    */
+  public static int getColorCount() {
+    return Jewels.colorCount;
+  }
+  
+  /** Returns the number of moves executed 
+    * @return number of moves
+    */
+  public static int getNumMoves() {
+    return Jewels.numMoves;
+  }
+  
+  /** Increments the number of moves taken */
+  public static void increaseNumMoves() {
+    Jewels.numMoves++;
+  }
+  
+  /** Returns the first button
+    * @return button 1
+    */
+  public static Button getButton1() {
+    return Jewels.button1;
+  }
+  
+  /** Returns position x of the first button 
+    * @return x position of button 1
+    */
+  public static int getButton1X() {
+    return Jewels.button1X;
+  }
+  
+  /** Returns position y of the first button
+    * @return y position of button 1
+    */
+  public static int getButton1Y() {
+    return Jewels.button1Y;
+  }
+  
+  /** Returns the color of the first button 
+    * @return color of button 1
+    */
+  public static Color getButton1Color() {
+    return Jewels.button1Color;
+  }
+  
+  /** 
+   * Sets the color of the first button 
+   * @param color new color
+   */
+  public static void setButton1Color(Color color) {
+    Jewels.button1Color = buttonColorArr[Jewels.getButton1X()][Jewels.getButton1Y()] = color;
+  }
+  
+  /** 
+   * Stores the attributes of the first button
+   * @param x x position
+   * @param y y position
+   * @param color color of the button
+   * @return true or false if there is a button stored
+   */
+  public static boolean storeButton1(int x, int y, Color color) {
+    if (Jewels.getButton1() == null) {
+      Jewels.button1 = buttonArr[x][y];
+      Jewels.button1X = x;
+      Jewels.button1Y = y;
+      Jewels.button1Color = color;
+      return true;
+    }
+    return false;
+  }
+  
+  /** Returns the second button 
+    * @return button 2
+    */
+  public static Button getButton2() {
+    return Jewels.button2;
+  }
+  
+  /** Returns the x position of the second button 
+    * @return x position of button 2
+    */
+  public static int getButton2X() {
+    return Jewels.button2X;
+  }
+  
+  /** Returns the y position of the second button 
+    * @return y position of button 2
+    */
+  public static int getButton2Y() {
+    return Jewels.button2Y;
+  }
+  
+  /** Returns the color of the second button 
+    * @return color of button 2
+    */
+  public static Color getButton2Color() {
+    return Jewels.button2Color;
+  }
+  
+  /** 
+   * Stores the attributes of the second button
+   * @param x x position
+   * @param y y position
+   * @param color color of the button
+   * @return true or false if there is a button stored
+   */
+  public static boolean storeButton2(int x, int y, Color color) {
+    if (Jewels.getButton2() == null) {
+      Jewels.button2 = buttonArr[x][y];
+      Jewels.button2X = x;
+      Jewels.button2Y = y;
+      Jewels.button2Color = color;
+      return true;
+    }
+    return false;    
+  }
+  
+  /** Nullifies button1 and button2 attributes */
+  public static void setNull() {
+    Jewels.button1 = null;
+    Jewels.button1Color = null;
+    Jewels.button2 = null;
+    Jewels.button2Color = null;
+  }
+  
+  /** Constructor that initializes numMoves, colorCount, and buttonArr */
+  public Jewels() {
+    this.numMoves = 0;
+    Jewels.colorCount = 4;
+    buttonArr = new Button[defaultX][defaultY];
+  }
+  
+  /** Initialize the GUI
+   * @param primaryStage the JavaFX main window
+   */
+  public void start(Stage primaryStage) {
+    
+    // Initializes gridpane
+    GridPane gridpane = new GridPane();
+    
+    // Initializes the button array
+    if (this.getParameters().getRaw().size() == 3) {
+      int[] paramArr = new int[3];  // Integer array of parameters to be stored
+      
+      try {
+        int i = 0;  // Initial index
+        // For-each loop to store each parameter into paramArr
+        for (String arr: this.getParameters().getRaw()) {
+          paramArr[i] = Integer.parseInt(arr);
+          i++;
+        }
+      } catch (NumberFormatException e) {
+        // Activates if a non-integer value is taken in as a parameter
+        System.out.println("Invalid parameter values. Default (x,y) and color values instantiated.");
+        paramArr[0] = defaultX;
+        paramArr[1] = defaultY;
+        paramArr[2] = Jewels.getColorCount();
+      }
+      
+      if (paramArr[0] >= 5 && paramArr[0] <= 20 &&
+          paramArr[1] >= 5 && paramArr[1] <= 20) {
+        buttonArr = new Button[paramArr[0]][paramArr[1]];
+      } else {
+          System.out.println("Invalid parameter values. Default (x,y) values instantiated.");
+      }
+      
+      if (paramArr[2] <= Jewels.colorArr.length && paramArr[2] > 0) {  // Checks the color parameter to be within colorArr's range
+        colorCount = paramArr[2];
+      } else {
+        System.out.println("Invalid parameter values. Default color count instantiated.");
+      }
+    }
+    
+    // Sets buttonColorArr and starMap to have the same length as buttonArr
+    buttonColorArr = new Color[buttonArr.length][buttonArr[0].length];
+    starMap = new boolean[buttonArr.length][buttonArr[0].length];
+    
+    // Creates a gridpane of buttons
+    for (int i = 0; i < buttonArr.length; i++) {
+      for (int j = 0; j < buttonArr[0].length; j++) {
+        
+        // Empty button in each index
+        buttonArr[i][j] = new Button();
+        
+        // Randomizes color of button from color array
+        this.colorIndex = (int)Math.floor(Math.random() * Jewels.getColorCount());
+        
+        // Makes the button 50px by 50px
+        buttonArr[i][j].setStyle("-fx-pref-width: 50px;" +
+                                 "-fx-pref-height: 50px;");
+        
+        // Colors the button
+        buttonArr[i][j].setBackground(new Background(new BackgroundFill(colorArr[this.getColorIndex()], new CornerRadii(25), new Insets(1))));
+        
+        buttonArr[i][j].setText("  ");    // Initializes text of button to be "  "
+        
+        gridpane.add(buttonArr[i][j], i, j);    // Adds button to gridpane
+        
+        buttonColorArr[i][j] = colorArr[this.getColorIndex()];
+        buttonArr[i][j].setOnAction(new JewelClick(i,j));    // Adds onclick event handler
+      }
+    }
+    
+    Scene scene = new Scene(gridpane);
+      
+    primaryStage.setTitle("Bejeweled");
+    primaryStage.setScene(scene);            // Add the "scene" to the main window
+    primaryStage.show();                     // Display the window
+  }
+  
+  /**
+   * The method to launch the program.
+   * @param args  The command line arguments.  The arguments are passed on to the JavaFX application.
+   */
+   public static void main(String[] args) {
+     Application.launch(args);
+   }
+   
+   /** Nested class JewelClick that handles button onClick events */
+   private class JewelClick implements EventHandler<ActionEvent> {
+     
+     /** Fields */
+     /** x position */
+     private int x;
+     
+     /** y position */
+     private int y;
+     
+     /** Color of the button */
+     private Color color;
+     
+     /** Constructor that takes in (x,y) position */
+     public JewelClick(int x, int y) {
+       this.x = x;
+       this.y = y;
+     }
+     
+     /**
+      * Returns the x position
+      * @return x position
+      */
+     public int getX() {
+       return this.x;
+     }
+     
+     /**
+      * Returns the y position
+      * @return y position
+      */
+     public int getY() {
+       return this.y;
+     }
+     
+     /**
+      * Returns the button color
+      * @return button color
+      */
+     public Color getColor() {
+       return buttonColorArr[getX()][getY()];
+     }
+     
+     /**
+      * Sets the new button color
+      * @param color new color
+      */
+     public void setColor(Color color) {
+       buttonColorArr[getX()][getY()] = color;
+     }
+     
+     /** 
+      * Darkens the button's color 
+      * @param b button to be changed
+      */
+     public void changeColorDark(Button b) {
+       b.setBackground(new Background(new BackgroundFill(this.getColor().darker(), new CornerRadii(25), new Insets(1))));
+     }
+     
+     /** Resets the button's color to be light */
+     public void changeColorLight() {
+       Jewels.getButton1().setBackground(new Background(new BackgroundFill(buttonColorArr[Jewels.getButton1X()][Jewels.getButton1Y()], new CornerRadii(25), new Insets(1))));
+       Jewels.getButton2().setBackground(new Background(new BackgroundFill(buttonColorArr[getX()][getY()], new CornerRadii(25), new Insets(1))));
+     }
+     
+     /**
+      * Checks if the buttons are adjacent 
+      * @return true if the buttons are adjacent
+      */
+     public boolean adjacentButtons() {
+       if ((Jewels.getButton1X() == Jewels.getButton2X() &&          // Adjacent in the X direction
+            (Jewels.getButton1Y() - 1 == Jewels.getButton2Y() ||
+             Jewels.getButton1Y() + 1 == Jewels.getButton2Y())) ||
+           (Jewels.getButton1Y() == Jewels.getButton2Y() &&          // Adjacent in the Y direction
+            (Jewels.getButton1X() + 1 == Jewels.getButton2X() ||
+             Jewels.getButton1X() - 1 == Jewels.getButton2X()))) {
+         return true;
+       }
+       return false;
+     }
+     
+     /**
+      * Swaps the colors of the two buttons
+      * @param b button to be swapped
+      */
+     public void swapColors(Button b) {
+       Color temp = this.getColor();  // Temp color that stores button 2's color
+       buttonColorArr[getX()][getY()] = Jewels.getButton1Color();  // Sets button 2's color to be button 1
+       Jewels.setButton1Color(temp);  // Sets button1's color to be button 2
+       
+       // Updates the button color
+       (Jewels.getButton1()).setBackground(new Background(new BackgroundFill(temp, new CornerRadii(25), new Insets(1))));
+       b.setBackground(new Background(new BackgroundFill(buttonColorArr[getX()][getY()], new CornerRadii(25), new Insets(1))));
+     }
+     
+     /**
+      * Finds the inital and final positions of a row of colors
+      * @param indexX the x position/row of the button
+      * @return ValueHolder object that takes in initial and final positions
+      */
+     public ValueHolder checkRow(int indexX) {
+       int init = 0;  // Initializes starting position to be 0
+       int fin = buttonColorArr.length - 1;  // Initializes final position to be the end of the array
+       
+       // Checks button colors after indexX
+       for (int i = indexX; i >= init; i--) {
+         
+         // If the colors do not match, init takes in index i + 1
+         if (buttonColorArr[i][getY()] != this.getColor()) {
+           init = i + 1;
+         }
+       }
+       
+       // Checks button colors before indexX
+       for (int i = indexX; i <= fin; i++) {
+         
+         // If the colors do not match, fin takes in index - 1
+         if (buttonColorArr[i][getY()] != this.getColor()) {
+           fin = i - 1;
+         }
+       }
+       
+       // Returns an empty ValueHolder object if the number of consecutive colors is less than 3
+       if (fin - init + 1 < 3) {
+         return new ValueHolder(0,0);
+       }
+       
+       // Return a ValueHolder object containing the initial and final indices
+       return new ValueHolder(init,fin);
+     }
+     
+     /**
+      * Finds the inital and final positions of a column of colors
+      * @param indexY the y position/column of the button
+      * @return ValueHolder object that takes in initial and final positions
+      */
+     public ValueHolder checkColumn(int indexY) {
+       int init = 0;  // Initializes starting position to be 0
+       int fin = buttonColorArr[0].length - 1;  // Initializes final position to be the end of the array
+       
+       // Checks button colors after indexY
+       for (int i = indexY; i >= init; i--) {
+         
+         // If the colors do not match, init takes in index i + 1
+         if (buttonColorArr[getX()][i] != this.getColor()) {
+           init = i + 1;
+         }
+       }
+       
+       // Checks button colors before indexY
+       for (int i = indexY; i <= fin; i++) {
+         
+         // If the colors do not match, fin takes in index - 1
+         if (buttonColorArr[getX()][i] != this.getColor()) {
+           fin = i - 1;
+         }
+       }
+       
+       // Returns an empty ValueHolder object if the number of consecutive colors is less than 3
+       if (fin - init + 1 < 3) {
+         return new ValueHolder(0,0);
+       }
+       
+       // Return a ValueHolder object containing the initial and final indices
+       return new ValueHolder(init,fin);
+     }
+     
+     /**
+      * Shifts row of colors downwards and marks the row with *'s
+      * @param row ValueHolder object that contains initial and final positions
+      */
+     public void tileMarkRow(ValueHolder row) {
+       
+       // Marks the consecutive row of colors with *'s
+       for (int i = row.getInit(); i <= row.getFin(); i++) {
+         buttonArr[i][getY()].setText("*");
+         starMap[i][getY()] = true;
+       }
+       
+       // Checks if the row is at x = 0
+       if (getX() != 0) {
+         
+         // Iterates through the row
+         for (int i = row.getInit(); i <= row.getFin(); i++) {
+           
+           // Interates through the column of the row index
+           for (int j = getY(); j > 0; j--) {
+             
+             // Changes the color to the one before it
+             buttonColorArr[i][j] = buttonColorArr[i][j - 1];
+             buttonArr[i][j].setBackground(new Background(new BackgroundFill(buttonColorArr[i][j], new CornerRadii(25), new Insets(1))));
+           }
+         }
+       }
+       
+       // Randomizes the colors of the top row
+       for (int i = row.getInit(); i <= row.getFin(); i++) {
+         buttonColorArr[i][0] = Jewels.colorArr[(int)Math.floor(Math.random() * Jewels.getColorCount())];
+         buttonArr[i][0].setBackground(new Background(new BackgroundFill(buttonColorArr[i][0], new CornerRadii(25), new Insets(1))));
+       }
+     }
+     
+     /**
+      * Shifts column of colors downwards and marks the column with *'s
+      * @param col ValueHolder object that contains initial and final positions
+      */
+     public void tileMarkCol(ValueHolder col) {
+       
+       // Marks the consecutive row of colors with *'s
+       for (int i = col.getInit(); i <= col.getFin(); i++) {
+         buttonArr[getX()][i].setText("*");
+         starMap[getX()][i] = true;
+       }
+       
+       // Swaps the colors of buttons at index i + count until it hits 0
+       int index = col.getInit();  // Initial position
+       for (int i = col.getInit(); i <= col.getFin(); i++) {
+         
+         // If i - getCount is above or equal to 0, the loop will continue to swap colors
+         if (i - col.getCount() >= 0) {
+           buttonColorArr[getX()][i] = buttonColorArr[getX()][i - col.getCount()];
+           buttonArr[getX()][i].setBackground(new Background(new BackgroundFill(buttonColorArr[getX()][i], new CornerRadii(25), new Insets(1))));
+         } else {
+           index = i;
+         }
+       }
+       
+       // Randomizes colors from 0 to index
+       for (int i = 0; i < index; i++) {
+         buttonColorArr[getX()][i] = Jewels.colorArr[(int)Math.floor(Math.random() * Jewels.getColorCount())];
+         buttonArr[getX()][i].setBackground(new Background(new BackgroundFill(buttonColorArr[getX()][i], new CornerRadii(25), new Insets(1))));
+       }
+     }
+     
+     /**
+      * Loops through starMap to find an unmarked asterisk
+      * @return true if all asterisks are marked
+      */
+     public boolean winCondition() {
+       
+       // Returns false if there is an unmarked asterisk
+       for (int i = 0; i < starMap.length; i++) {
+         for (int j = 0; j < starMap[0].length; j++) {
+           if (!starMap[i][j]) {
+             return false;
+           }
+         }
+       }
+       return true;
+     }
+     
+     /** Respond to a button click
+       * @param e  the information about the action event 
+       */
+     public void handle(ActionEvent e) {
+       
+       Button b = buttonArr[getX()][getY()] = (Button)e.getSource();  // Clicked button
+       
+       if (Jewels.storeButton1(this.getX(),this.getY(),this.getColor())) {  // Checks if the button is the first one of two clicked
+         
+         // Darkens the button
+         (Jewels.getButton1()).setBackground(new Background(new BackgroundFill(Jewels.buttonColorArr[getX()][getY()].darker(), new CornerRadii(25), new Insets(1))));
+       } else if (Jewels.storeButton2(this.getX(),this.getY(),this.getColor())) {  // Stores the second button
+         
+         // Darkens the button
+         b.setBackground(new Background(new BackgroundFill(this.getColor().darker(), new CornerRadii(25), new Insets(1))));
+         
+         // Checks if the buttons are adjacent
+         if (adjacentButtons()) {
+           
+           // Swaps the button colors
+           swapColors(b);
+           
+           // Stores ValueHolder objects row and col
+           ValueHolder row = checkRow(this.getX());
+           ValueHolder col = checkColumn(this.getY());
+           
+           // If the number of consecutive colors is less than 3, colors get swapped back
+           if (row.getCount() < 2 && col.getCount() < 2) {
+             swapColors(b);
+           } else {
+             
+             // Checks row to be marked
+             if (row.getCount() > 1) {
+               tileMarkRow(row);
+             }
+             
+             // Checks column to be marked
+             if (col.getCount() > 1) {
+               tileMarkCol(col);
+             }
+             
+             // Increases moves taken
+             Jewels.increaseNumMoves();
+           }
+         }
+         
+         // Resets the color of the buttons
+         changeColorLight();
+         
+         // Checks if all tiles are marked
+         if (winCondition()) {
+           System.out.println("You win!");
+           System.out.println("Number of moves taken: " + Jewels.getNumMoves());
+         }
+         
+         // Nullifies stored button1 and button2
+         Jewels.setNull();
+       }
+     }
+   }
+}

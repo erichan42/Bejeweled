@@ -1,0 +1,26 @@
+public class ValueHolder {
+  
+  private int init;
+  
+  private int fin;
+  
+  private int count;
+  
+  public ValueHolder(int init, int fin, int count) {
+    this.init = init;
+    this.fin = fin;
+    this.count = count;
+  }
+  
+  public int getInit() {
+    return this.init;
+  }
+  
+  public int getFin() {
+    return this.fin;
+  }
+  
+  public int getCount() {
+    return this.count;
+  }
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<drjava version="drjava-20160913-225446">
+  <project autorefresh="false" main="" manifest="" root="" work="">
+    <createjar file="" flags="1"/>
+    <source>
+      <file active="true" name="Jewels.java" package="" timestamp="29-Apr-2019 20:54:40">
+        <select from="0" to="0"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="ValueHolder.java" package="" timestamp="29-Apr-2019 12:34:12">
+        <select from="0" to="0"/>
+        <scroll column="0" row="0"/>
+      </file>
+    </source>
+    <included/>
+    <excluded>
+      <file name="C:/Users/erich/Desktop/Java/Project 5/JewelTester.java" package="" timestamp="29-Apr-2019 20:59:29">
+        <select from="0" to="0"/>
+        <scroll column="0" row="0"/>
+      </file>
+      <file name="C:/Users/erich/Desktop/Java/Project 5/SimpleApp.java" package="" timestamp="29-Apr-2019 19:04:01">
+        <select from="0" to="0"/>
+        <scroll column="0" row="0"/>
+      </file>
+    </excluded>
+    <collapsed/>
+    <classpath/>
+    <breakpoints/>
+    <watches/>
+    <bookmarks/>
+    <preferences/>
+  </project>
+</drjava>

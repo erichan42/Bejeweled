@@ -1,0 +1,91 @@
+import javafx.application.Application;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.CornerRadii;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+
+import org.junit.*;
+import static org.junit.Assert.*;
+
+public class JewelTester {
+  
+  private static final Color[] colorArr = {Color.rgb(218, 64, 61),Color.rgb(238, 189, 77),Color.rgb(71, 146, 137),Color.rgb(95, 87, 120), Color.rgb(38, 70, 83), Color.rgb(224, 168, 144)};
+  
+  public Button[][] buttonArray(int x, int y) {
+    Button[][] button = new Button[x][y];
+    
+    for (int i = 0; i < x; i++) {
+      for (int j = 0; j < y; j++) {
+        button[i][j] = new Button();
+      }
+    }
+    return button;
+  }
+  
+  public Color[][] colorArray(int x, int y, int count) {
+    Color[][] color = new Color[x][y];
+    
+    for (int i = 0; i < x; i++) {
+      for (int j = 0; j < y; j++) {
+        color[i][j] = colorArr[(int)Math.floor(Math.random() * count)];
+      }
+    }
+    return color;
+  }
+  
+  public boolean[][] starmap(int x, int y) {
+    return new boolean[x][y];
+  }
+  
+//  @Test
+  public void storeButton1Tester() {
+    Jewels jewelObj = new Jewels();
+    Button[][] buttonArr = buttonArray(5, 5);
+    Color[][] color = colorArray(5, 5, 3);
+    
+    assertTrue(jewelObj.storeButton1(0,0,color[0][0]));
+  }
+  
+//  @Test
+  public void adjacentButtonsTester() {
+    
+  }
+  
+//  @Test
+  public void swapColorsTester() {
+    
+  }
+  
+//  @Test
+  public void checkRowTester() {
+    
+  }
+  
+//  @Test
+  public void checkColumnTester() {
+    
+  }
+  
+  @Test
+  public void tileMarkRowTester() {
+  
+  }
+  
+//  @Test
+  public void tileMarkColTester() {
+    
+  }
+  
+//  @Test
+  public void winConditionTester() {
+    
+  }
+}
